@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Jiminshii 🌻</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #111827, #030712);
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+        .inicio-container {
+            position: absolute;
+            z-index: 10;
+            transition: opacity 0.8s ease;
+        }
+        .boton-regalo {
+            background: #facc15;
+            color: #1e1b4b;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
+            transition: transform 0.3s;
+        }
+        .boton-regalo:hover {
+            transform: scale(1.1);
+        }
+        .sorpresa-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .mensaje {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #fef08a;
+            margin-bottom: 50px;
+            max-width: 85%;
+            line-height: 1.5;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+        }
+        .flor {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .centro {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            background: #78350f;
+            border-radius: 50%;
+            z-index: 5;
+        }
+        .petalo {
+            position: absolute;
+            background: #facc15;
+            width: 45px;
+            height: 95px;
+            border-radius: 50%;
+            transform-origin: center center;
+            opacity: 0;
+            transform: scale(0) rotate(0deg);
+            z-index: 4;
+        }
+        .animar-petalo {
+            animation: brotarPetalo 1.5s forwards;
+        }
+        .tallo {
+            position: absolute;
+            width: 8px;
+            height: 160px;
+            background: #166534;
+            top: 100px;
+            left: 96px;
+            z-index: 1;
+            border-radius: 4px;
+            transform-origin: top center;
+            transform: scaleY(0);
+            transition: transform 1s ease 0.5s;
+        }
+        .hoja {
+            position: absolute;
+            width: 35px;
+            height: 20px;
+            background: #15803d;
+            border-radius: 100px 0 100px 0;
+            top: 40px;
+            left: 5px;
+            transform: scale(0);
+            transition: transform 0.5s ease 1.2s;
+        }
+        .hoja.derecha {
+            left: -32px;
+            transform: scale(0) rotateY(180deg);
+        }
+        @keyframes brotarPetalo {
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(var(--rotacion)) translateY(-40px);
+            }
+        }
+        .p1 { --rotacion: 0deg; --delay: 0.1s; }
+        .p2 { --rotacion: 45deg; --delay: 0.2s; }
+        .p3 { --rotacion: 90deg; --delay: 0.3s; }
+        .p4 { --rotacion: 135deg; --delay: 0.4s; }
+        .p5 { --rotacion: 180deg; --delay: 0.5s; }
+        .p6 { --rotacion: 225deg; --delay: 0.6s; }
+        .p7 { --rotacion: 270deg; --delay: 0.7s; }
+        .p8 { --rotacion: 315deg; --delay: 0.8s; }
+    </style>
+</head>
+<body>
+
+    <div class="inicio-container" id="pantallaInicio">
+        <button class="boton-regalo" id="btnAbrir">Tengo un detalle para ti ✨</button>
+    </div>
+
+    <!-- REPRODUCTOR DE MÚSICA DE FONDO -->
+    <audio id="musicaFondo" src="https://soundhelix.com" loop></audio>
+
+    <div class="sorpresa-container" id="pantallaSorpresa">
+        
+        <div class="mensaje">
+            Este segundo día de celebración por las flores amarillas te dedico esta flor desde el fondo de mi corazón Jiminshii, eres el mejor, te amo mucho 💛
+        </div>
+        
+        <div class="flor">
+            <div class="centro"></div>
+            <div class="petalo p1"></div>
+            <div class="petalo p2"></div>
+            <div class="petalo p3"></div>
+            <div class="petalo p4"></div>
+            <div class="petalo p5"></div>
+            <div class="petalo p6"></div>
+            <div class="petalo p7"></div>
+            <div class="petalo p8"></div>
+            <div class="tallo" id="tallo">
+                <div class="hoja"></div>
+                <div class="hoja derecha"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btnAbrir = document.getElementById('btnAbrir');
+        const pantallaInicio = document.getElementById('pantallaInicio');
+        const pantallaSorpresa = document.getElementById('pantallaSorpresa');
+        const tallo = document.getElementById('tallo');
+        const hojas = document.querySelectorAll('.hoja');
+        const petalos = document.querySelectorAll('.petalo');
+        const musica = document.getElementById('musicaFondo');
+
+        btnAbrir.addEventListener('click', () => {
+            // Reproducir música al hacer clic
+            musica.play().catch(error => console.log("La reproducción automática requiere interacción:", error));
+
+            pantallaInicio.style.opacity = '0';
+            setTimeout(() => {
+                pantallaInicio.style.display = 'none';
+                pantallaSorpresa.style.display = 'flex';
+                setTimeout(() => {
+                    pantallaSorpresa.style.opacity = '1';
+                    tallo.style.transform = 'scaleY(1)';
+                    hojas.forEach(hoja => {
+                        hoja.style.transform = hoja.classList.contains('derecha') ? 'scale(1) rotateY(180deg)' : 'scale(1)';
+                    });
+                    petalos.forEach(petalo => {
+                        const delay = petalo.style.getPropertyValue('--delay');
+                        petalo.style.animationDelay = delay;
+                        petalo.classList.add('animar-petalo');
+                    });
+                }, 100);
+            }, 800);
+        });
+    </script>
+</body>
+</html>
