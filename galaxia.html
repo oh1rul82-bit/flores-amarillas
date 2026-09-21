@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Jiminshii 🌻</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #020208;
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+        .inicio-container {
+            position: absolute;
+            z-index: 30;
+            transition: opacity 0.8s ease;
+        }
+        .boton-regalo {
+            background: linear-gradient(45deg, #facc15, #eab308);
+            color: #1e1b4b;
+            border: none;
+            padding: 16px 35px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(250, 204, 21, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .boton-regalo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(250, 204, 21, 0.9);
+        }
+        .sorpresa-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 2s ease;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+        .mensaje {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #fef08a;
+            max-width: 80%;
+            line-height: 1.5;
+            text-shadow: 0 0 20px rgba(250, 204, 21, 0.7);
+            z-index: 10;
+            pointer-events: none;
+            animation: flotarTexto 4s ease-in-out infinite;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        @keyframes flotarTexto {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="inicio-container" id="pantallaInicio">
+        <button class="boton-regalo" id="btnAbrir">Ver galaxia de flores amarillas ✨</button>
+    </div>
+
+    <audio id="musicaFondo" src="musica.mp3" autoplay loop></audio>
+
+    <div class="sorpresa-container" id="pantallaSorpresa">
+        <!-- OPCIÓN 2 TOTALMENTE INTEGRADA Y CENTRADA -->
+        <div class="mensaje">
+            Estas flores amarillas son para ti Jiminshii, desde el fondo de mi corazón. Eres una persona muy especial para mí ¡Te amo mucho! 
+        </div>
+        <canvas id="canvasGalaxia"></canvas>
+    </div>
+
+    <script>
+        const btnAbrir = document.getElementById('btnAbrir');
+        const pantallaInicio = document.getElementById('pantallaInicio');
+        const pantallaSorpresa = document.getElementById('pantallaSorpresa');
+        const canvas = document.getElementById('canvasGalaxia');
+        const ctx = canvas.getContext('2d');
+        const musica = document.getElementById('musicaFondo');
+
+        let flores = [];
+        let estrellas = [];
+
+        function ajustarPantalla() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', ajustarPantalla);
+        ajustarPantalla();
+
+        class FlorGalactica {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.angle = Math.random() * Math.PI * 2;
+                this.size = Math.random() * 25 + 10;
+                this.speedRotation = Math.random() * 0.02 + 0.005;
+                this.speedX = (Math.random() - 0.5) * 0.6;
+                this.speedY = (Math.random() - 0.5) * 0.6;
+                this.brillo = Math.random() * 0.5 + 0.5;
+            }
+
+            dibujar() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.globalAlpha = this.brillo;
+
+                ctx.fillStyle = '#facc15';
+                for (let i = 0; i < 8; i++) {
+                    ctx.rotate(Math.PI / 4);
+                    ctx.beginPath();
+                    ctx.ellipse(0, -this.size * 0.6, this.size * 0.25, this.size * 0.5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size * 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = '#78350f';
+                ctx.fill();
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = '#451a03';
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            actualizar() {
+                this.angle += this.speedRotation;
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < -20 || this.x > canvas.width + 20) this.speedX *= -1;
+                if (this.y < -20 || this.y > canvas.height + 20) this.speedY *= -1;
+            }
+        }
+
+        class Estrella {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.alpha = Math.random();
+                this.speedAlpha = Math.random() * 0.02 + 0.005;
+            }
+            dibujar() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+            actualizar() {
+                this.alpha += this.speedAlpha;
+                if (this.alpha > 1 || this.alpha < 0) this.speedAlpha *= -1;
+            }
+        }
+
+        function inicializarElementos() {
+            for (let i = 0; i < 35; i++) flores.push(new FlorGalactica());
+            for (let i = 0; i < 80; i++) estrellas.push(new Estrella());
+        }
+
+        function animarGalaxia() {
+            ctx.fillStyle = 'rgba(2, 2, 8, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            estrellas.forEach(e => { e.actualizar(); e.dibujar(); });
+            flores.forEach(f => { f.actualizar(); f.dibujar(); });
+
+            requestAnimationFrame(animarGalaxia);
+        }
+
+        btnAbrir.addEventListener('click', () => {
+            musica.play().catch(e => console.log("Interacción de audio:", e));
+            
+            inicializarElementos();
+            animarGalaxia();
+
+            pantallaInicio.style.opacity = '0';
+            setTimeout(() => {
+                pantallaInicio.style.display = 'none';
+                pantallaSorpresa.style.display = 'flex';
+                setTimeout(() => {
+                    pantallaSorpresa.style.opacity = '1';
+                }, 100);
+            }, 800);
+        });
+    </script>
+</body>
+</html>
